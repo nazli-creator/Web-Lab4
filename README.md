@@ -16,9 +16,8 @@ lab4/
 
 ## Challenges I Faced
 
-- **Keeping the state immutable:** `TaskManager` cannot mutate the original `tasks` array, so methods like `push` and `splice` were off the table. I used the spread operator, `.filter()` and `.map()` to build a new array each time and assign it to `this.tasks`.
-- **Making `id` read-only:** `Object.defineProperty` with `writable: false` makes assigning to `task.id` fail silently instead of changing it. I also set `enumerable: true` so the `id` still shows up when the object is inspected.
-- **Toggling without mutating:** `toggle()` returns a new `Task` with the flipped `completed` value, so `toggleTask` uses `.map()` to replace only the matching task and keep the others unchanged.
-- **Waiting for the async data:** The tasks only exist after the 1500ms delay, so everything that depends on them (creating `Task` instances, storing them, rendering) comes after `await fetchTasks()` inside a `try/catch`, so a failure shows an error in `statusMessage`.
-- **The JSON round trip:** The raw data goes through `JSON.stringify` and `JSON.parse` before rendering. The parsed result is plain objects, not `Task` instances, so I had to map them into `new Task(...)` to get `toggle()` back.
-- **Building the DOM without inline HTML:** Each task is built with `createElement` and `appendChild`, with event listeners attached in JavaScript. After every toggle or delete the list is cleared with `textContent = ""` and re-rendered from `TaskManager`.
+- **Updating state without mutating it:** `TaskManager` is not allowed to change the original `tasks` array, so `push` and `splice` were not an option. I used the spread operator, `.filter()` and `.map()` to build a new array and assign it to `this.tasks`. `toggle()` works the same way: it returns a new `Task` instead of changing `completed`, and `toggleTask` uses `.map()` to swap only the matching task.
+- **Making `id` read-only:** I used `Object.defineProperty` with `writable: false`. Assigning to `task.id` afterwards does not change it, and it fails silently because normal scripts are not in strict mode (in strict mode it would throw a `TypeError`).
+- **Waiting for the async data:** The tasks only exist after the 1500ms delay, so creating `Task` instances, storing them and rendering all happen after `await fetchTasks()`. Everything is wrapped in `try/catch` so a failure shows an error message in `statusMessage`.
+- **The JSON round trip:** After `JSON.stringify` and `JSON.parse` I only get plain objects back, not `Task` instances, so `toggle()` does not exist on them. I had to map each object into `new Task(...)` before storing it in `TaskManager`.
+- **Building the DOM without inline HTML:** Each task is created with `createElement` and `appendChild`, and the click events are added with `addEventListener`. After every toggle or delete I clear the list with `textContent = ""` and render it again from `TaskManager`.
