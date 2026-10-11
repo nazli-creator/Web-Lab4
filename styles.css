@@ -1,0 +1,35 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+button {
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+#statusMessage {
+  min-height: 1.2em;
+  color: #555;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.task span {
+  flex: 1;
+}
+
+.task.completed span {
+  text-decoration: line-through;
+  color: #888;
+}
